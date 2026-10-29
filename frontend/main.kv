@@ -1,0 +1,1254 @@
+# Munchkin Helper - Интерфейс приложения
+# Светлая цветовая схема в стиле настольной игры Манчкин
+
+
+<LoginScreen>:
+    name: 'login'
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 50
+        spacing: 20
+        canvas.before:
+            Color:
+                rgba: 0.83, 0.72, 0.59, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Widget:
+            size_hint_y: 0.1
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: 460
+            spacing: 15
+            pos_hint: {'center_x': 0.5}
+
+            Label:
+                text: 'Вход в систему'
+                font_size: 48
+                bold: True
+                color: 0.17, 0.09, 0.06, 1
+                size_hint_y: None
+                height: 60
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: None
+                width: 400
+                size_hint_y: None
+                height: 340
+                spacing: 5
+                pos_hint: {'center_x': 0.5}
+
+                TextInput:
+                    id: login_input
+                    hint_text: 'Логин'
+                    font_size: 24
+                    multiline: False
+                    size_hint_y: None
+                    height: 55
+                    background_color: 0.96, 0.90, 0.83, 1
+                    foreground_color: 0.17, 0.09, 0.06, 1
+                    cursor_color: 0.17, 0.09, 0.06, 1
+                    hint_text_color: 0.5, 0.5, 0.5, 1
+
+                TextInput:
+                    id: password_input
+                    hint_text: 'Пароль'
+                    font_size: 24
+                    multiline: False
+                    password: True
+                    size_hint_y: None
+                    height: 55
+                    background_color: 0.96, 0.90, 0.83, 1
+                    foreground_color: 0.17, 0.09, 0.06, 1
+                    cursor_color: 0.17, 0.09, 0.06, 1
+                    hint_text_color: 0.5, 0.5, 0.5, 1
+
+                # Чекбокс "Запомнить меня"
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: 40
+                    spacing: 10
+
+                    CheckBox:
+                        id: remember_checkbox
+                        size_hint: None, None
+                        size: 30, 30
+                        color: 0.75, 0.25, 0.25, 1
+
+                    Label:
+                        text: 'Запомнить меня'
+                        font_size: 18
+                        color: 0.17, 0.09, 0.06, 1
+                        halign: 'left'
+                        valign: 'middle'
+
+                Button:
+                    text: 'Авторизоваться'
+                    font_size: 28
+                    bold: True
+                    size_hint_y: None
+                    height: 65
+                    background_color: 0.75, 0.25, 0.25, 1
+                    color: 0.96, 0.90, 0.83, 1
+                    on_press: root.on_login_button()
+
+                Label:
+                    id: message_label
+                    text: ''
+                    font_size: 18
+                    color: 0.55, 0.0, 0.0, 1
+                    size_hint_y: None
+                    height: 40
+                    halign: 'center'
+                    valign: 'middle'
+
+                # Надпись "Зарегистрироваться" (кликабельная)
+                Button:
+                    text: 'Зарегистрироваться'
+                    font_size: 18
+                    size_hint_y: None
+                    height: 35
+                    background_color: 0, 0, 0, 0
+                    color: 0.17, 0.09, 0.06, 1
+                    on_press: root.on_register_click()
+
+        Widget:
+            size_hint_y: 0.5
+
+<RegisterScreen>:
+    name: 'register'
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 50
+        spacing: 20
+        canvas.before:
+            Color:
+                rgba: 0.83, 0.72, 0.59, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Кнопка "Назад" справа сверху
+        Button:
+            text: 'Назад'
+            font_size: 22
+            bold: True
+            size_hint: None, None
+            width: 140
+            height: 50
+            pos_hint: {'right': 0.98, 'top': 0.95}
+            background_color: 0.75, 0.25, 0.25, 1
+            color: 0.96, 0.90, 0.83, 1
+            on_press: root.on_back()
+
+        Widget:
+            size_hint_y: 0.1
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: 460
+            spacing: 10
+            pos_hint: {'center_x': 0.5}
+
+            Label:
+                text: 'Регистрация'
+                font_size: 48
+                bold: True
+                color: 0.17, 0.09, 0.06, 1
+                size_hint_y: None
+                height: 60
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: None
+                width: 400
+                size_hint_y: None
+                height: 340
+                spacing: 10
+                pos_hint: {'center_x': 0.5}
+
+                TextInput:
+                    id: login_input
+                    hint_text: 'Логин'
+                    font_size: 24
+                    multiline: False
+                    size_hint_y: None
+                    height: 55
+                    background_color: 0.96, 0.90, 0.83, 1
+                    foreground_color: 0.17, 0.09, 0.06, 1
+                    cursor_color: 0.17, 0.09, 0.06, 1
+                    hint_text_color: 0.5, 0.5, 0.5, 1
+
+                TextInput:
+                    id: password_input
+                    hint_text: 'Пароль'
+                    font_size: 24
+                    multiline: False
+                    password: True
+                    size_hint_y: None
+                    height: 55
+                    background_color: 0.96, 0.90, 0.83, 1
+                    foreground_color: 0.17, 0.09, 0.06, 1
+                    cursor_color: 0.17, 0.09, 0.06, 1
+                    hint_text_color: 0.5, 0.5, 0.5, 1
+
+                TextInput:
+                    id: password_confirm_input
+                    hint_text: 'Повторите пароль'
+                    font_size: 24
+                    multiline: False
+                    password: True
+                    size_hint_y: None
+                    height: 55
+                    background_color: 0.96, 0.90, 0.83, 1
+                    foreground_color: 0.17, 0.09, 0.06, 1
+                    cursor_color: 0.17, 0.09, 0.06, 1
+                    hint_text_color: 0.5, 0.5, 0.5, 1
+
+                Button:
+                    text: 'Зарегистрироваться'
+                    font_size: 28
+                    bold: True
+                    size_hint_y: None
+                    height: 65
+                    background_color: 0.75, 0.25, 0.25, 1
+                    color: 0.96, 0.90, 0.83, 1
+                    on_press: root.on_register_button()
+
+                Label:
+                    id: message_label
+                    text: ''
+                    font_size: 18
+                    color: 0.55, 0.0, 0.0, 1
+                    size_hint_y: None
+                    height: 40
+                    halign: 'center'
+                    valign: 'middle'
+
+        Widget:
+            size_hint_y: 0.5
+
+<MainScreen>:
+    name: 'main'
+
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 0.83, 0.72, 0.59, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Button:
+            text: 'Выход'
+            font_size: 22
+            bold: True
+            size_hint: None, None
+            width: 140
+            height: 50
+            pos_hint: {'x': 0.02, 'top': 0.95}
+            background_color: 0.75, 0.25, 0.25, 1
+            color: 0.96, 0.90, 0.83, 1
+            on_press: root.on_logout()
+
+        Label:
+            id: user_label
+            text: 'Игрок: ---'
+            font_size: 28
+            bold: True
+            color: 0.17, 0.09, 0.06, 1
+            size_hint: None, None
+            width: 400
+            height: 50
+            pos_hint: {'center_x': 0.5, 'top': 0.95}
+            halign: 'center'
+            valign: 'middle'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: None, None
+            width: 600
+            height: 300
+            spacing: 60
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+            Button:
+                text: 'Справочник'
+                font_size: 32
+                bold: True
+                size_hint: None, None
+                width: 270
+                height: 270
+                background_color: 0.75, 0.25, 0.25, 1
+                color: 0.96, 0.90, 0.83, 1
+                on_press: root.on_catalog()
+
+            Button:
+                text: 'Новая игра'
+                font_size: 32
+                bold: True
+                size_hint: None, None
+                width: 270
+                height: 270
+                background_color: 0.75, 0.25, 0.25, 1
+                color: 0.96, 0.90, 0.83, 1
+                on_press: root.on_new_game()
+
+
+
+<GameScreen>:
+    name: 'game'
+
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 0.83, 0.72, 0.59, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Кнопка "Назад" слева сверху
+        Button:
+            text: 'Назад'
+            font_size: 22
+            bold: True
+            size_hint: None, None
+            width: 140
+            height: 50
+            pos_hint: {'x': 0.02, 'top': 0.95}
+            background_color: 0.75, 0.25, 0.25, 1
+            color: 0.96, 0.90, 0.83, 1
+            on_press: root.on_back()
+
+        # Кнопка "Справочник" справа сверху
+        Button:
+            text: 'Справочник'
+            font_size: 22
+            bold: True
+            size_hint: None, None
+            width: 180
+            height: 50
+            pos_hint: {'right': 0.98, 'top': 0.95}
+            background_color: 0.75, 0.25, 0.25, 1
+            color: 0.96, 0.90, 0.83, 1
+            on_press: root.on_catalog()
+
+        # Кнопка "Очистить" внизу по центру
+        Button:
+            text: 'Очистить'
+            font_size: 22
+            bold: True
+            size_hint: None, None
+            width: 200
+            height: 50
+            pos_hint: {'center_x': 0.5, 'y': 0.05}
+            background_color: 0.75, 0.25, 0.25, 1
+            color: 0.96, 0.90, 0.83, 1
+            on_press: root.on_clear()
+
+        # Заголовок "Общая сила:" по центру сверху
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: None, None
+            width: 400
+            height: 60
+            pos_hint: {'center_x': 0.57, 'top': 0.88}
+            spacing: 10
+
+            Label:
+                text: 'Общая сила:'
+                font_size: 32
+                bold: True
+                color: 0.17, 0.09, 0.06, 1
+                halign: 'right'
+                valign: 'middle'
+                text_size: self.size
+
+            Label:
+                id: total_value
+                text: '1'
+                font_size: 36
+                bold: True
+                color: 0.75, 0.25, 0.25, 1
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.size
+
+        # Три квадрата со счетчиками (уменьшена высота)
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: None, None
+            width: 900
+            height: 250
+            spacing: 60
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+            # Квадрат 1: Уровень
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: None, None
+                width: 270
+                height: 250
+                spacing: 10
+                canvas.before:
+                    Color:
+                        rgba: 0.96, 0.90, 0.83, 1
+                    Line:
+                        rectangle: self.x, self.y, self.width, self.height
+                        width: 3
+
+                Label:
+                    text: 'Уровень'
+                    font_size: 28
+                    bold: True
+                    color: 0.17, 0.09, 0.06, 1
+                    size_hint_y: None
+                    height: 40
+
+                Label:
+                    id: level_value
+                    text: '1'
+                    font_size: 48
+                    bold: True
+                    color: 0.17, 0.09, 0.06, 1
+                    size_hint_y: None
+                    height: 70
+
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: 60
+                    spacing: 20
+
+                    Button:
+                        text: '-'
+                        font_size: 36
+                        bold: True
+                        background_color: 0.75, 0.25, 0.25, 1
+                        color: 0.96, 0.90, 0.83, 1
+                        on_press: root.on_strength_down()
+
+                    Button:
+                        text: '+'
+                        font_size: 36
+                        bold: True
+                        background_color: 0.75, 0.25, 0.25, 1
+                        color: 0.96, 0.90, 0.83, 1
+                        on_press: root.on_strength_up()
+
+            # Квадрат 2: Сила
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: None, None
+                width: 270
+                height: 250
+                spacing: 10
+                canvas.before:
+                    Color:
+                        rgba: 0.96, 0.90, 0.83, 1
+                    Line:
+                        rectangle: self.x, self.y, self.width, self.height
+                        width: 3
+
+                Label:
+                    text: 'Сила'
+                    font_size: 28
+                    bold: True
+                    color: 0.17, 0.09, 0.06, 1
+                    size_hint_y: None
+                    height: 40
+
+                Label:
+                    id: strength_value
+                    text: '0'
+                    font_size: 48
+                    bold: True
+                    color: 0.17, 0.09, 0.06, 1
+                    size_hint_y: None
+                    height: 70
+
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: 60
+                    spacing: 20
+
+                    Button:
+                        text: '-'
+                        font_size: 36
+                        bold: True
+                        background_color: 0.75, 0.25, 0.25, 1
+                        color: 0.96, 0.90, 0.83, 1
+                        on_press: root.on_strength_down()
+
+                    Button:
+                        text: '+'
+                        font_size: 36
+                        bold: True
+                        background_color: 0.75, 0.25, 0.25, 1
+                        color: 0.96, 0.90, 0.83, 1
+                        on_press: root.on_strength_up()
+
+            # Квадрат 3: Дебаф силы
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: None, None
+                width: 270
+                height: 250
+                spacing: 10
+                canvas.before:
+                    Color:
+                        rgba: 0.96, 0.90, 0.83, 1
+                    Line:
+                        rectangle: self.x, self.y, self.width, self.height
+                        width: 3
+
+                Label:
+                    text: 'Дебаф силы'
+                    font_size: 28
+                    bold: True
+                    color: 0.17, 0.09, 0.06, 1
+                    size_hint_y: None
+                    height: 40
+
+                Label:
+                    id: debuff_value
+                    text: '0'
+                    font_size: 48
+                    bold: True
+                    color: 0.17, 0.09, 0.06, 1
+                    size_hint_y: None
+                    height: 70
+
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: 60
+                    spacing: 20
+
+                    Button:
+                        text: '-'
+                        font_size: 36
+                        bold: True
+                        background_color: 0.75, 0.25, 0.25, 1
+                        color: 0.96, 0.90, 0.83, 1
+                        on_press: root.on_debuff_down()
+
+                    Button:
+                        text: '+'
+                        font_size: 36
+                        bold: True
+                        background_color: 0.75, 0.25, 0.25, 1
+                        color: 0.96, 0.90, 0.83, 1
+                        on_press: root.on_debuff_up()
+                        
+<CatalogScreen>:
+    name: 'catalog'
+
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 0.83, 0.72, 0.59, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Кнопка "Назад" слева сверху
+        Button:
+            text: 'Назад'
+            font_size: 22
+            bold: True
+            size_hint: None, None
+            width: 140
+            height: 50
+            pos_hint: {'x': 0.02, 'top': 0.95}
+            background_color: 0.75, 0.25, 0.25, 1
+            color: 0.96, 0.90, 0.83, 1
+            on_press: root.on_back()
+
+        # Заголовок
+        Label:
+            text: 'Справочник'
+            font_size: 48
+            bold: True
+            color: 0.17, 0.09, 0.06, 1
+            size_hint: None, None
+            width: 400
+            height: 60
+            pos_hint: {'center_x': 0.5, 'top': 0.92}
+            halign: 'center'
+            valign: 'middle'
+
+        # Три кнопки-раздела вертикально по центру
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: None, None
+            width: 500
+            height: 360
+            spacing: 30
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+            Button:
+                text: 'Бестиарий'
+                font_size: 32
+                bold: True
+                size_hint_y: None
+                height: 100
+                background_color: 0.75, 0.25, 0.25, 1
+                color: 0.96, 0.90, 0.83, 1
+                on_press: root.on_bestiary()
+
+            Button:
+                text: 'Расы/Классы'
+                font_size: 32
+                bold: True
+                size_hint_y: None
+                height: 100
+                background_color: 0.75, 0.25, 0.25, 1
+                color: 0.96, 0.90, 0.83, 1
+                on_press: root.on_races_classes()
+
+            Button:
+                text: 'Правила'
+                font_size: 32
+                bold: True
+                size_hint_y: None
+                height: 100
+                background_color: 0.75, 0.25, 0.25, 1
+                color: 0.96, 0.90, 0.83, 1
+                on_press: root.on_rules()
+
+        # Метка для информационных сообщений
+        Label:
+            id: message_label
+            text: ''
+            font_size: 22
+            color: 0.17, 0.09, 0.06, 1
+            size_hint: None, None
+            width: 600
+            height: 40
+            pos_hint: {'center_x': 0.5, 'y': 0.05}
+            halign: 'center'
+            valign: 'middle'
+
+<BestiaryScreen>:
+    name: 'bestiary'
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 15
+        canvas.before:
+            Color:
+                rgba: 0.83, 0.72, 0.59, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Верхняя панель: заголовок и кнопка "Назад"
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            spacing: 20
+
+            Label:
+                text: 'Бестиарий'
+                font_size: 36
+                bold: True
+                color: 0.17, 0.09, 0.06, 1
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.size
+
+            Widget:
+                size_hint_x: 1
+
+            Button:
+                text: 'Назад'
+                font_size: 22
+                bold: True
+                size_hint: None, None
+                width: 140
+                height: 50
+                background_color: 0.75, 0.25, 0.25, 1
+                color: 0.96, 0.90, 0.83, 1
+                on_press: root.on_back()
+
+        # Панель поиска и фильтрации
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            spacing: 15
+
+            TextInput:
+                id: search_input
+                hint_text: 'Поиск по названию...'
+                font_size: 22
+                multiline: False
+                background_color: 0.96, 0.90, 0.83, 1
+                foreground_color: 0.17, 0.09, 0.06, 1
+                cursor_color: 0.17, 0.09, 0.06, 1
+                hint_text_color: 0.5, 0.5, 0.5, 1
+                on_text: root.on_search_text(self.text)
+
+            Button:
+                id: filter_dropdown
+                text: 'Все'
+                font_size: 22
+                bold: True
+                size_hint: None, None
+                width: 200
+                height: 60
+                background_color: 0.75, 0.25, 0.25, 1
+                color: 0.96, 0.90, 0.83, 1
+                on_release: filter_menu.open(self)
+
+            DropDown:
+                id: filter_menu
+                on_select: 
+                    filter_dropdown.text = args[1]
+                    root.on_filter_change(args[1])
+
+                Button:
+                    text: 'Все'
+                    font_size: 20
+                    size_hint_y: None
+                    height: 50
+                    on_release: filter_menu.select(self.text)
+
+                Button:
+                    text: 'Нормальные'
+                    font_size: 20
+                    size_hint_y: None
+                    height: 50
+                    on_release: filter_menu.select(self.text)
+
+                Button:
+                    text: 'Андеды'
+                    font_size: 20
+                    size_hint_y: None
+                    height: 50
+                    on_release: filter_menu.select(self.text)
+
+                Button:
+                    text: 'Драконы'
+                    font_size: 20
+                    size_hint_y: None
+                    height: 50
+                    on_release: filter_menu.select(self.text)
+
+        # Список монстров
+        ScrollView:
+            BoxLayout:
+                id: monsters_list
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: 5
+
+<MonsterDetailScreen>:
+    name: 'monster_detail'
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 30
+        spacing: 20
+        canvas.before:
+            Color:
+                rgba: 0.83, 0.72, 0.59, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Верхняя панель
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            spacing: 20
+
+            Label:
+                text: 'Описание монстра'
+                font_size: 32
+                bold: True
+                color: 0.17, 0.09, 0.06, 1
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.size
+
+            Widget:
+                size_hint_x: 1
+
+            Button:
+                text: 'Назад'
+                font_size: 22
+                bold: True
+                size_hint: None, None
+                width: 140
+                height: 50
+                background_color: 0.75, 0.25, 0.25, 1
+                color: 0.96, 0.90, 0.83, 1
+                on_press: root.on_back()
+
+        # Карточка монстра — узкая, как игровая карточка
+        ScrollView:
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: 550
+                spacing: 0
+
+                Widget:
+                    size_hint_x: 1
+
+                # Контейнер карточки с ограниченной шириной и рамкой
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_x: None
+                    width: 500
+                    padding: 25
+                    spacing: 10
+                    canvas.before:
+                        Color:
+                            rgba: 0.96, 0.90, 0.83, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                        Color:
+                            rgba: 0.17, 0.09, 0.06, 1
+                        Line:
+                            rectangle: self.x, self.y, self.width, self.height
+                            width: 4
+
+                    # Имя монстра
+                    Label:
+                        id: monster_name
+                        text: ''
+                        font_size: 32
+                        bold: True
+                        color: 0.17, 0.09, 0.06, 1
+                        size_hint_y: None
+                        height: 40
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+
+                    # Тип
+                    Label:
+                        id: monster_type
+                        text: ''
+                        font_size: 22
+                        bold: True
+                        color: 0.75, 0.25, 0.25, 1
+                        size_hint_y: None
+                        height: 28
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+
+                    # Уровень
+                    Label:
+                        id: monster_level
+                        text: ''
+                        font_size: 22
+                        bold: True
+                        color: 0.17, 0.09, 0.06, 1
+                        size_hint_y: None
+                        height: 28
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+
+                    # Разделитель
+                    Widget:
+                        size_hint_y: None
+                        height: 8
+
+                    # Описание
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: 100
+                        spacing: 5
+
+                        Label:
+                            text: 'Описание:'
+                            font_size: 20
+                            bold: True
+                            color: 0.17, 0.09, 0.06, 1
+                            size_hint_y: None
+                            height: 28
+                            halign: 'left'
+                            valign: 'middle'
+                            text_size: self.size
+
+                        Label:
+                            id: monster_description
+                            text: ''
+                            font_size: 18
+                            color: 0.17, 0.09, 0.06, 1
+                            halign: 'left'
+                            valign: 'top'
+                            text_size: self.size
+
+                    # Непотребство
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: 100
+                        spacing: 5
+
+                        Label:
+                            text: 'Непотребство:'
+                            font_size: 20
+                            bold: True
+                            color: 0.17, 0.09, 0.06, 1
+                            size_hint_y: None
+                            height: 28
+                            halign: 'left'
+                            valign: 'middle'
+                            text_size: self.size
+
+                        Label:
+                            id: monster_quirk
+                            text: ''
+                            font_size: 18
+                            color: 0.17, 0.09, 0.06, 1
+                            halign: 'left'
+                            valign: 'top'
+                            text_size: self.size
+
+                    # Разделитель
+                    Widget:
+                        size_hint_y: None
+                        height: 8
+
+                    # Награды
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_y: None
+                        height: 35
+                        spacing: 30
+
+                        Label:
+                            id: monster_xp
+                            text: ''
+                            font_size: 20
+                            bold: True
+                            color: 0.17, 0.09, 0.06, 1
+                            halign: 'left'
+                            valign: 'middle'
+                            text_size: self.size
+
+                        Label:
+                            id: monster_treasure
+                            text: ''
+                            font_size: 20
+                            bold: True
+                            color: 0.17, 0.09, 0.06, 1
+                            halign: 'left'
+                            valign: 'middle'
+                            text_size: self.size
+
+                Widget:
+                    size_hint_x: 1
+
+<RacesClassesScreen>:
+    name: 'races_classes'
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 15
+        canvas.before:
+            Color:
+                rgba: 0.83, 0.72, 0.59, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Верхняя панель
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            spacing: 20
+
+            Label:
+                text: 'Расы и Классы'
+                font_size: 36
+                bold: True
+                color: 0.17, 0.09, 0.06, 1
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.size
+
+            Widget:
+                size_hint_x: 1
+
+            Button:
+                text: 'Назад'
+                font_size: 22
+                bold: True
+                size_hint: None, None
+                width: 140
+                height: 50
+                background_color: 0.75, 0.25, 0.25, 1
+                color: 0.96, 0.90, 0.83, 1
+                on_press: root.on_back()
+
+        # Панель поиска
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            spacing: 15
+
+            TextInput:
+                id: search_input
+                hint_text: 'Поиск по названию...'
+                font_size: 22
+                multiline: False
+                background_color: 0.96, 0.90, 0.83, 1
+                foreground_color: 0.17, 0.09, 0.06, 1
+                cursor_color: 0.17, 0.09, 0.06, 1
+                hint_text_color: 0.5, 0.5, 0.5, 1
+                on_text: root.on_search_text(self.text)
+
+        # Список
+        ScrollView:
+            BoxLayout:
+                id: items_list
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: 5
+
+
+<RaceClassDetailScreen>:
+    name: 'race_class_detail'
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 30
+        spacing: 20
+        canvas.before:
+            Color:
+                rgba: 0.83, 0.72, 0.59, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Верхняя панель
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            spacing: 20
+
+            Label:
+                text: 'Описание'
+                font_size: 32
+                bold: True
+                color: 0.17, 0.09, 0.06, 1
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.size
+
+            Widget:
+                size_hint_x: 1
+
+            Button:
+                text: 'Назад'
+                font_size: 22
+                bold: True
+                size_hint: None, None
+                width: 140
+                height: 50
+                background_color: 0.75, 0.25, 0.25, 1
+                color: 0.96, 0.90, 0.83, 1
+                on_press: root.on_back()
+
+        # Карточка
+        ScrollView:
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: 550
+                spacing: 0
+
+                Widget:
+                    size_hint_x: 1
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_x: None
+                    width: 500
+                    padding: 25
+                    spacing: 10
+                    canvas.before:
+                        Color:
+                            rgba: 0.96, 0.90, 0.83, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                        Color:
+                            rgba: 0.17, 0.09, 0.06, 1
+                        Line:
+                            rectangle: self.x, self.y, self.width, self.height
+                            width: 4
+
+                    # Тип (Раса/Класс)
+                    Label:
+                        id: item_type_label
+                        text: ''
+                        font_size: 22
+                        bold: True
+                        color: 0.75, 0.25, 0.25, 1
+                        size_hint_y: None
+                        height: 35
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+
+                    # Имя
+                    Label:
+                        id: item_name
+                        text: ''
+                        font_size: 32
+                        bold: True
+                        color: 0.17, 0.09, 0.06, 1
+                        size_hint_y: None
+                        height: 45
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+
+                    Widget:
+                        size_hint_y: None
+                        height: 10
+
+                    # Способность 1
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: 90
+                        spacing: 5
+
+                        Label:
+                            text: 'Способность 1:'
+                            font_size: 20
+                            bold: True
+                            color: 0.17, 0.09, 0.06, 1
+                            size_hint_y: None
+                            height: 28
+                            halign: 'left'
+                            valign: 'middle'
+                            text_size: self.size
+
+                        Label:
+                            id: ability_1
+                            text: '—'
+                            font_size: 18
+                            color: 0.17, 0.09, 0.06, 1
+                            halign: 'left'
+                            valign: 'top'
+                            text_size: self.size
+
+                    # Способность 2
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: 90
+                        spacing: 5
+
+                        Label:
+                            text: 'Способность 2:'
+                            font_size: 20
+                            bold: True
+                            color: 0.17, 0.09, 0.06, 1
+                            size_hint_y: None
+                            height: 28
+                            halign: 'left'
+                            valign: 'middle'
+                            text_size: self.size
+
+                        Label:
+                            id: ability_2
+                            text: '—'
+                            font_size: 18
+                            color: 0.17, 0.09, 0.06, 1
+                            halign: 'left'
+                            valign: 'top'
+                            text_size: self.size
+
+                    Widget:
+                        size_hint_y: None
+                        height: 10
+
+                    # Эпическая способность 1
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: 90
+                        spacing: 5
+
+                        Label:
+                            text: 'Эпическая способность 1:'
+                            font_size: 20
+                            bold: True
+                            color: 0.17, 0.09, 0.06, 1
+                            size_hint_y: None
+                            height: 28
+                            halign: 'left'
+                            valign: 'middle'
+                            text_size: self.size
+
+                        Label:
+                            id: epic_ability_1
+                            text: '—'
+                            font_size: 18
+                            color: 0.17, 0.09, 0.06, 1
+                            halign: 'left'
+                            valign: 'top'
+                            text_size: self.size
+
+                    # Эпическая способность 2
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: 90
+                        spacing: 5
+
+                        Label:
+                            text: 'Эпическая способность 2:'
+                            font_size: 20
+                            bold: True
+                            color: 0.17, 0.09, 0.06, 1
+                            size_hint_y: None
+                            height: 28
+                            halign: 'left'
+                            valign: 'middle'
+                            text_size: self.size
+
+                        Label:
+                            id: epic_ability_2
+                            text: '—'
+                            font_size: 18
+                            color: 0.17, 0.09, 0.06, 1
+                            halign: 'left'
+                            valign: 'top'
+                            text_size: self.size
+
+                Widget:
+                    size_hint_x: 1
