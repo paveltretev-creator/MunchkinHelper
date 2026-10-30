@@ -15,7 +15,8 @@ class GameScreen(Screen):
         """При входе на экран — загрузить сохраненные данные"""
         if self.controller:
             self.controller.load_saved_game()
-    
+
+    # =========== #
     def on_level_up(self):
         if self.controller:
             self.controller.change_level(1)
@@ -31,6 +32,7 @@ class GameScreen(Screen):
     def on_strength_down(self):
         if self.controller:
             self.controller.change_strength(-1)
+    # =========== #
     
     def on_debuff_up(self):
         # Дебаф увеличивается в минус (например, от -1 до -2)

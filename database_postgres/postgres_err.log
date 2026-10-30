@@ -1,0 +1,10 @@
+2026-10-30 10:02:44.646 MSK [48807] LOG:  starting PostgreSQL 18.4 (DBngin.app) on aarch64-apple-darwin25.5.0, compiled by Apple clang version 21.0.0 (clang-2100.1.1.101), 64-bit
+2026-10-30 10:02:44.648 MSK [48807] LOG:  listening on IPv6 address "::1", port 4267
+2026-10-30 10:02:44.648 MSK [48807] LOG:  listening on IPv4 address "127.0.0.1", port 4267
+2026-10-30 10:02:44.649 MSK [48807] LOG:  listening on Unix socket "/tmp/.s.PGSQL.4267"
+2026-10-30 10:02:44.661 MSK [48813] LOG:  database system was shut down at 2026-10-30 10:02:44 MSK
+2026-10-30 10:02:44.662 MSK [48807] LOG:  database system is ready to accept connections
+2026-10-30 10:07:44.664 MSK [48811] LOG:  checkpoint starting: time
+2026-10-30 10:09:30.051 MSK [48811] LOG:  checkpoint complete: wrote 1040 buffers (6.3%), wrote 3 SLRU buffers; 1 WAL file(s) added, 0 removed, 0 recycled; write=105.318 s, sync=0.037 s, total=105.392 s; sync files=342, longest=0.002 s, average=0.001 s; distance=4919 kB, estimate=4919 kB; lsn=0/1C54F98, redo lsn=0/1C54F08
+2026-10-30 10:12:44.061 MSK [48811] LOG:  checkpoint starting: time
+2026-10-30 10:12:44.795 MSK [48811] LOG:  checkpoint complete: wrote 7 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.714 s, sync=0.001 s, total=0.736 s; sync files=8, longest=0.001 s, average=0.001 s; distance=5 kB, estimate=4428 kB; lsn=0/1C56398, redo lsn=0/1C56340
