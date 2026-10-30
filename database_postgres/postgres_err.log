@@ -8,3 +8,8 @@
 2026-10-30 10:09:30.051 MSK [48811] LOG:  checkpoint complete: wrote 1040 buffers (6.3%), wrote 3 SLRU buffers; 1 WAL file(s) added, 0 removed, 0 recycled; write=105.318 s, sync=0.037 s, total=105.392 s; sync files=342, longest=0.002 s, average=0.001 s; distance=4919 kB, estimate=4919 kB; lsn=0/1C54F98, redo lsn=0/1C54F08
 2026-10-30 10:12:44.061 MSK [48811] LOG:  checkpoint starting: time
 2026-10-30 10:12:44.795 MSK [48811] LOG:  checkpoint complete: wrote 7 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.714 s, sync=0.001 s, total=0.736 s; sync files=8, longest=0.001 s, average=0.001 s; distance=5 kB, estimate=4428 kB; lsn=0/1C56398, redo lsn=0/1C56340
+2026-10-30 10:43:23.269 MSK [48807] LOG:  received smart shutdown request
+2026-10-30 10:43:28.296 MSK [48890] FATAL:  terminating connection due to unexpected postmaster exit
+2026-10-30 10:43:28.289 MSK [52653] FATAL:  terminating connection due to unexpected postmaster exit
+2026-10-30 10:43:28.296 MSK [48949] FATAL:  terminating connection due to unexpected postmaster exit
+2026-10-30 10:43:28.296 MSK [48906] FATAL:  terminating connection due to unexpected postmaster exit

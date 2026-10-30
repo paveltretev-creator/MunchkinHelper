@@ -3,81 +3,115 @@ name: Build Android APK
 on:
   push:
     branches: [ main, master ]
-    tags: [ 'v*' ]
   workflow_dispatch:
 
 jobs:
   build-apk:
     runs-on: ubuntu-22.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Set up Python
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       
       - name: Install system dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
             build-essential git zip unzip \
-            openjdk-17-jdk autoconf libtool \
-            pkg-config zlib1g-dev libncurses5-dev \
-            libncursesw5-dev libtinfo5 cmake \
-            libffi-dev libssl-dev ccache
+            openjdk-17-jdk-headless \
+            autoconf libtool pkg-config \
+            zlib1g-dev libncurses5-dev libncursesw5-dev \
+            libtinfo5 cmake libffi-dev libssl-dev \
+            ccache python3-pip wget
       
       - name: Set Java environment
         run: |
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
+          echo "/usr/lib/jvm/java-17-openjdk-amd64/bin" >> $GITHUB_PATH
       
-      - name: Install buildozer and cython
+      - name: Install Android SDK and Build Tools
+        run: |
+          # Скачиваем Android command-line tools
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd $HOME/android-sdk/cmdline-tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip
+          mv cmdline-tools latest
+          
+          # Устанавливаем необходимые компоненты
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+          
+          yes | sdkmanager --licenses || true
+          sdkmanager "platforms;android-33"
+          sdkmanager "build-tools;33.0.2"
+          sdkmanager "ndk;25.2.9519653"
+          
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "PATH=$PATH" >> $GITHUB_ENV
+          
+          # Проверяем, что AIDL установлен
+          ls -la $ANDROID_HOME/build-tools/33.0.2/aidl
+      
+      - name: Install buildozer
         run: |
           python -m pip install --upgrade pip
-          pip install buildozer cython==0.29.33
+          pip install buildozer cython==0.29.36
       
-      - name: Prepare flat project structure
+      - name: Prepare project structure
         run: |
-          # Buildozer ожидает плоскую структуру — копируем всё в корень
           cp -r backend/app ./app
-          cp -r backend/api ./api
           cp -r frontend/screens ./screens
           cp -r frontend/controllers ./controllers
           cp -r frontend/services ./services
           cp frontend/main.kv ./main.kv
-          cp frontend/main.py ./main.py
           
-          # Создаём __init__.py если их нет
-          find ./app ./api ./screens ./controllers ./services -type d -exec touch {}/__init__.py \;
+          touch ./app/__init__.py
+          touch ./screens/__init__.py
+          touch ./controllers/__init__.py
+          touch ./services/__init__.py
           
+          echo "=== Структура ==="
           ls -la
+          ls app/
+          ls screens/
       
-      - name: Cache buildozer downloads
+      - name: Cache buildozer
         uses: actions/cache@v4
         with:
-          path: ~/.buildozer/android
-          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
-          restore-keys: ${{ runner.os }}-buildozer-
+          path: |
+            ~/.buildozer
+            ./.buildozer
+            ~/android-sdk
+          key: buildozer-${{ hashFiles('buildozer.spec') }}
+          restore-keys: buildozer-
       
-      - name: Build debug APK
-        run: buildozer android debug
+      - name: Build APK
+        run: |
+          buildozer -v android debug 2>&1 | tee build.log
         env:
-          ANDROID_HOME: /usr/lib/android-sdk
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
       
-      - name: Upload APK artifact
+      - name: Upload build log on failure
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: munchkin-helper-debug-apk
+          name: build-log
+          path: build.log
+          retention-days: 7
+      
+      - name: Upload APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: munchkin-helper-apk
           path: bin/*.apk
           retention-days: 30
-      
-      - name: Upload to GitHub Release (on tag)
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: bin/*.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
