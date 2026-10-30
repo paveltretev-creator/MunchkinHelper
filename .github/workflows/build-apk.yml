@@ -35,17 +35,24 @@ jobs:
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
           echo "/usr/lib/jvm/java-17-openjdk-amd64/bin" >> $GITHUB_PATH
       
-      - name: Install Android SDK
+      - name: Install Android SDK directly to Buildozer path
         run: |
-          # Скачиваем cmdline-tools
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          cd $HOME/android-sdk/cmdline-tools
+          # Устанавливаем SDK ПРЯМО в папку Buildozer
+          BUILDOZER_SDK="/home/runner/.buildozer/android/platform/android-sdk"
+          mkdir -p $BUILDOZER_SDK/cmdline-tools
+          
+          cd $BUILDOZER_SDK/cmdline-tools
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
           unzip -q commandlinetools-linux-11076708_latest.zip
           mv cmdline-tools latest
           
-          export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+          # Создаём симлинк для старой структуры (tools/bin/sdkmanager)
+          mkdir -p $BUILDOZER_SDK/tools/bin
+          ln -s $BUILDOZER_SDK/cmdline-tools/latest/bin/sdkmanager $BUILDOZER_SDK/tools/bin/sdkmanager
+          ln -s $BUILDOZER_SDK/cmdline-tools/latest/bin/avdmanager $BUILDOZER_SDK/tools/bin/avdmanager
+          
+          export ANDROID_HOME=$BUILDOZER_SDK
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools/bin
           
           # Принимаем ВСЕ лицензии
           yes | sdkmanager --licenses || true
@@ -55,13 +62,11 @@ jobs:
           sdkmanager "build-tools;33.0.2"
           sdkmanager "ndk;25.2.9519653"
           
-          # ВАЖНО: Копируем в АБСОЛЮТНЫЙ путь, где Buildozer ищет
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk/build-tools
-          cp -r $ANDROID_HOME/build-tools/33.0.2 $HOME/.buildozer/android/platform/android-sdk/build-tools/
-          
           # Проверяем
+          echo "=== Проверка sdkmanager ==="
+          ls -la $BUILDOZER_SDK/tools/bin/sdkmanager
           echo "=== Проверка AIDL ==="
-          ls -la $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/aidl
+          ls -la $BUILDOZER_SDK/build-tools/33.0.2/aidl
           
           echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
           echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
