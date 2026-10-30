@@ -14,6 +14,60 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            build-essential git zip unzip \
+            openjdk-17-jdk-headless \
+            autoconf libtool pkg-config \
+            zlib1g-dev libncurses5-dev libncursesw5-dev \
+            libtinfo5 cmake libffi-dev libssl-dev \
+            ccache python3-pip wget
+      
+      - name: Set Java environment
+        run: |
+          echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
+          echo "/usr/lib/jvm/java-17-openjdk-amd64/bin" >> $GITHUB_PATH
+      
+      - name: Install Android SDK manually
+        run: |
+          # Скачиваем cmdline-tools
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd $HOME/android-sdk/cmdline-tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip
+          mv cmdline-tools latest
+          
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+          
+          # Принимаем ВСЕ лицензии автоматически
+          yes | sdkmanager --licenses || true
+          
+          # Устанавливаем нужные компоненты
+          sdkmanager "platforms;android-33"
+          sdkmanager "build-tools;33.0.2"
+          sdkmanager "ndk;25.2.9519653"
+          
+          # Проверяем AIDL
+          echo "=== Проверка AIDL ==="
+          ls -la $ANDROID_HOME/build-tools/33.0.2/aidl
+          
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "PATH=$PATH" >> $GITHUB_ENV
+      
+      - name: Install buildozer
+        run: |
+          python -m pip install --upgrade pip
+          pip install buildozer cython==0.29.36
+      
       - name: Prepare project structure
         run: |
           cp -r backend/app ./app
@@ -27,23 +81,26 @@ jobs:
           touch ./controllers/__init__.py
           touch ./services/__init__.py
           
-          echo "=== Структура готова ==="
+          echo "=== Структура ==="
+          ls -la
+          ls app/
+          ls screens/
       
-      - name: Cache Buildozer global directory
+      - name: Cache buildozer
         uses: actions/cache@v4
         with:
-          path: ~/.buildozer-cache
-          key: buildozer-global-${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
-          restore-keys: |
-            buildozer-global-${{ runner.os }}-
-
-      - name: Build APK with Docker
+          path: |
+            ~/.buildozer
+            ./.buildozer
+          key: buildozer-${{ hashFiles('buildozer.spec') }}
+          restore-keys: buildozer-
+      
+      - name: Build APK
         run: |
-          # --entrypoint sh переопределяет стандартный "buildozer", позволяя выполнить shell-команды
-          docker run --rm --entrypoint sh \
-            -v $(pwd):/home/user/hostcwd \
-            -v ~/.buildozer-cache:/home/user/.buildozer \
-            kivy/buildozer -c "yes | sdkmanager --licenses > /dev/null 2>&1 && buildozer android debug"
+          buildozer -v android debug 2>&1 | tee build.log
+        env:
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
       
       - name: Find and copy APK
         if: success()
@@ -71,7 +128,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-log
-          path: |
-            .buildozer-cache/android/platform/build-arm64-v8a/dists/munchkinhelper/build/outputs/apk/debug/*.apk
+          path: build.log
           retention-days: 7
-          if-no-files-found: warn
