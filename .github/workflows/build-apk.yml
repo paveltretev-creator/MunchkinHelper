@@ -14,59 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends \
-            build-essential git zip unzip \
-            openjdk-17-jdk-headless \
-            autoconf libtool pkg-config \
-            zlib1g-dev libncurses5-dev libncursesw5-dev \
-            libtinfo5 cmake libffi-dev libssl-dev \
-            ccache python3-pip wget
-      
-      - name: Set Java environment
-        run: |
-          echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
-          echo "/usr/lib/jvm/java-17-openjdk-amd64/bin" >> $GITHUB_PATH
-      
-      - name: Install Android SDK manually
-        run: |
-          # Скачиваем cmdline-tools
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          cd $HOME/android-sdk/cmdline-tools
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-          unzip -q commandlinetools-linux-11076708_latest.zip
-          mv cmdline-tools latest
-          
-          export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
-          
-          # Принимаем лицензии
-          yes | sdkmanager --licenses || true
-          
-          # Устанавливаем нужные компоненты
-          sdkmanager "platforms;android-33"
-          sdkmanager "build-tools;33.0.2"
-          sdkmanager "ndk;25.2.9519653"
-          
-          # Проверяем AIDL
-          echo "=== Проверка AIDL ==="
-          ls -la $ANDROID_HOME/build-tools/33.0.2/aidl
-          
-          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
-      
-      - name: Install buildozer
-        run: |
-          python -m pip install --upgrade pip
-          pip install buildozer cython==0.29.36
-      
       - name: Prepare project structure
         run: |
           cp -r backend/app ./app
@@ -83,48 +30,42 @@ jobs:
           echo "=== Структура ==="
           ls -la
           ls app/
+          ls screens/
       
-      - name: Copy SDK to buildozer location
+      - name: Build APK with Docker
         run: |
-          # Buildozer ищет SDK в .buildozer/android/platform/android-sdk
-          # Копируем туда наш SDK
-          mkdir -p .buildozer/android/platform
-          cp -r $ANDROID_HOME .buildozer/android/platform/android-sdk
-          
-          echo "=== Проверка копирования ==="
-          ls -la .buildozer/android/platform/android-sdk/build-tools/33.0.2/aidl
-      
-      - name: Cache buildozer
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.buildozer
-            ./.buildozer
-          key: buildozer-${{ hashFiles('buildozer.spec') }}
-          restore-keys: buildozer-
-      
-      - name: Build APK
-        run: |
-          buildozer -v android debug 2>&1 | tee build.log
+          docker run --rm -v $(pwd):/home/user/hostcwd kivy/buildozer android debug
         env:
-          ANDROID_HOME: ${{ env.ANDROID_HOME }}
-          ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
+          ANDROID_HOME: /home/user/.buildozer/android/platform/android-sdk
       
-      - name: Upload build log on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: build.log
-          retention-days: 7
+      - name: Find and copy APK
+        if: success()
+        run: |
+          echo "=== Поиск APK ==="
+          find . -name "*.apk" -type f
+          
+          mkdir -p bin
+          find . -name "*.apk" -type f -exec cp {} bin/ \;
+          
+          echo "=== APK в bin/ ==="
+          ls -la bin/
       
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: munchkin-helper-apk
-          path: |
-            bin/*.apk
-            .buildozer/android/bin/*.apk
+          path: bin/*.apk
           retention-days: 30
           if-no-files-found: error
+      
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: |
+            .buildozer/android/platform/build-arm64-v8a/build/libs.txt
+            .buildozer/android/platform/build-arm64-v8a/dists/munchkinhelper/build/outputs/apk/debug/*.apk
+          retention-days: 7
+          if-no-files-found: warn
