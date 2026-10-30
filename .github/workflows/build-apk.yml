@@ -35,30 +35,12 @@ jobs:
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
           echo "/usr/lib/jvm/java-17-openjdk-amd64/bin" >> $GITHUB_PATH
       
-      - name: Install Android SDK and Build Tools
-        run: |
-          # Скачиваем Android command-line tools
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          cd $HOME/android-sdk/cmdline-tools
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-          unzip -q commandlinetools-linux-11076708_latest.zip
-          mv cmdline-tools latest
-          
-          # Устанавливаем необходимые компоненты
-          export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
-          
-          yes | sdkmanager --licenses || true
-          sdkmanager "platforms;android-33"
-          sdkmanager "build-tools;33.0.2"
-          sdkmanager "ndk;25.2.9519653"
-          
-          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
-          echo "PATH=$PATH" >> $GITHUB_ENV
-          
-          # Проверяем, что AIDL установлен
-          ls -la $ANDROID_HOME/build-tools/33.0.2/aidl
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          api-level: 33
+          build-tools: 33.0.2
+          ndk: 25.2.9519653
       
       - name: Install buildozer
         run: |
@@ -89,7 +71,6 @@ jobs:
           path: |
             ~/.buildozer
             ./.buildozer
-            ~/android-sdk
           key: buildozer-${{ hashFiles('buildozer.spec') }}
           restore-keys: buildozer-
       
@@ -113,5 +94,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: munchkin-helper-apk
-          path: bin/*.apk
+          path: |
+            bin/*.apk
+            .buildozer/android/bin/*.apk
           retention-days: 30
+          if-no-files-found: error
